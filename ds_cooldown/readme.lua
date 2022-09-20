@@ -38,7 +38,9 @@ AddEventHandler('d00kiesh0es:checkCooldown', function()
 	-- INSERT TRIGGER CLIENT SIDE TO START
 end)
 
--- CheckTest function
+------------------------
+-- CheckTest function --
+------------------------
 function CheckTest(time)
 	local length = 3600 -- one hour cooldown
 
@@ -50,7 +52,7 @@ function CheckTest(time)
 	end
 end
 
---[[
+
 This function (above) will be broken down to give you a better understanding on how to utilize it
 
 local length = 3600
@@ -68,8 +70,6 @@ if testCooldown + length <= time then
 
 		so for this example it would return a value of TRUE meaning the cooldown is over and the script will continue [return true]
 
-]]
-
 
 -- setting server cooldown time
 RegisterServerEvent('d00kiesh0es:setCooldown')
@@ -79,7 +79,9 @@ AddEventHandler('d00kiesh0es:setCooldown', function()
 	exports["ds_cooldown"]:SetTest(time) -- this will set the time, found on servers end, and will begin a cooldown
 end)
 
--- SetTest function
+----------------------
+-- SetTest function --
+----------------------
 function SetTest(time)
 	local length = 3600 -- one hour cooldown
 
@@ -93,7 +95,6 @@ function SetTest(time)
 end
 
 
---[[
 This function (above) will be broken down to give you a better understanding on how to utilize it
 
 local length = 3600
@@ -106,4 +107,60 @@ testCooldown = 0
 	resets the timer to 0 everytime it attempts to set the time (need this if a cooldown is used often such as robberies)
 testCooldown = time
 	sets the value of the time sent over to so that then, when using CheckTest, they will have to wait 1 hour (how these examples are set up) until this will work again
-]]
+
+---------------------------------
+-- explanation on what this is --
+---------------------------------
+Citizen.CreateThread(function()
+	local currentTime = os.time() - 1800
+
+	testCooldown = currentTime
+
+	print('^5[ds_cooldown] ^0 :', os.date('%X', testCooldown))
+end)
+
+This will just print the cooldown on when it starts. In my server, i have all my cooldowns take 30 mins for it to allow someone to do. Meaning, after 30 minutes into a server restart, someone can rob a bank
+
+
+
+---------------------------
+-- Adding More Cooldowns --
+---------------------------
+Lastly, in the fxmanifest.lua, you can add more exports to have different triggers. For my own script I have about 5+ different exports it checks for. Adding more is easy to do as you just need to add a new function to test and another to sets
+
+
+-- example 
+
+-- add this to fxmanifest
+server_export 'CheckTest2'
+server_export 'SetTest2'
+
+
+-- add this to server side
+local testCooldown2 = 0
+
+function CheckTest2(time)
+	local length = 3600 -- one hour cooldown
+	local next = 0
+
+	if testCooldown2 + length <= time then 
+		-- INSERT RESET VALUES TO THE SCRIPT SO IT WILL ALLOW YOU TO DO IT IF TIME IS UP
+		return true
+	else
+		return false
+	end
+end
+
+function SetTest2(time)
+	local length = 3600 -- one hour cooldowns
+	local next = 0
+
+	if testCooldown2 + length <= time then 
+		testCooldown2 = 0
+		testCooldown2 = time
+		next = testCooldown2 + length
+		return true
+	else
+		return false
+	end
+end
